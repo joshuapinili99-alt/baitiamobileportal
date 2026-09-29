@@ -1,0 +1,160 @@
+BAITIA Community Portal - V25 Mobile App Shell / Netlify Ready
+
+V25 RESPONSIVE MOBILE APP NAVIGATION
+- Phones and compact screens up to 1023px use an app-style left navigation drawer; coarse-pointer tablets up to 1366px also use the drawer so iPad-class devices keep the app navigation in portrait and landscape where appropriate.
+- A 44px touch-friendly menu button in the fixed app header opens and closes the drawer. Tapping the backdrop, the close button, a navigation item, or Escape closes it.
+- The drawer shows Profile, Search, Community, Messages, Announcements, Q&A, Links/Website, Events & Activities, Connect & Contribute, and Main Admin when the signed-in role permits it.
+- Unread notification badges remain visible on the corresponding drawer items.
+- Secondary mobile controls are consolidated into the drawer: People/online presence, Light/Dark Mode, Settings, and Sign Out. Notifications remain immediately available from the compact top app bar.
+- Desktop/fine-pointer layouts retain the existing full navigation, while touch-first tablet layouts use the app drawer.
+- Safe-area handling covers iPhone notch/Dynamic Island/home-indicator regions, while tablet and landscape breakpoints keep controls reachable without overlap.
+- Main content, notification panels, chat workspaces, and fixed UI now anchor to the compact app header rather than reserving space for the old mobile navigation grid.
+- Added a static web-app manifest and 192px/512px app icons for more reliable Add to Home Screen / standalone PWA behavior on supported Android, iPhone, iPad, and desktop browsers.
+- Existing Firebase data structures, roles, notifications, messaging, groups, Community, Events, Q&A, Links, and Connect & Contribute logic are retained.
+
+V24 PREVIOUS RELEASE
+V24 TEAM APPLICATION ALERTS & COMPLETE LEADER PICKER
+- Every Approval Leader locked to a Team by the Main Admin can now review that Team's pending applications inside Connect & Contribute > Team Approvals. Approval authority is Team-based rather than limited to only the applicant's selected contact.
+- When a Team has multiple locked leaders, the applicant may still choose one primary Approval Leader contact for messaging, but every locked Team leader can see and approve/decline the pending application.
+- Connect & Contribute notification badges and portal/browser notifications now recognize Team assignments, so all locked Team leaders are notified when a new application arrives for their Team.
+- When one Team leader approves or declines an application, the pending item disappears from the other Team leaders' pending queues through the existing live Firestore listeners.
+- New applications store the Team leader snapshot in teamLeaderIds for routing/audit continuity. Changing locked leaders synchronizes pending application routing metadata.
+- Main Admin > Approval Leader Management now lists every registered account supplied by the portal users collection, including Main Admin, Co-Admins, regular users, and accounts not yet approved.
+- Existing Approval Leaders remain visible in the picker and are marked as already appointed instead of disappearing.
+- Added a searchable account field for Approval Leader selection by name, login ID, email, role, or status, plus a shown/total account count.
+- Accounts that are not yet approved may be appointed for future use, but they cannot sign in to use the approval queue until their portal account itself is approved.
+- Only the Main Admin can appoint/remove Approval Leaders or change Team-to-leader locks. Co-Admins keep their existing application review permissions but cannot edit leader assignments.
+
+
+V23 CONNECT & CONTRIBUTE - TEAM-LOCKED APPROVAL LEADERS
+- Main Admin can now lock one or more appointed Approval Leaders to each specific Team inside Connect & Contribute > Admin > Team Management.
+- Co-Admins can see the locked leader assignment but have no UI control to add, remove, or change the Team leader mapping. Team name/description management remains available to Co-Admins.
+- Users see Team Approval Contacts grouped by Team and can message only the Approval Leaders locked to the relevant Team.
+- New team applications can select only leaders locked to that Team. If exactly one leader is locked, routing is automatic. If several are locked, the user selects from that Team-only list.
+- If no leader is locked to a Team, users can still apply and the application remains reviewable by Main Admin and Co-Admins.
+- Appointed Approval Leaders see and can review only pending applications routed to them. Unrelated or general-queue applications are no longer exposed to other Leaders.
+- Changing a Team's locked leader list automatically reroutes pending applications whose prior leader is no longer eligible.
+- Removing an Approval Leader also removes that user from every Team lock and reroutes pending assigned applications to another locked Team leader when available, otherwise to the admin approval queue.
+- New Teams are created with an explicit empty approvalLeaderIds lock list so leader routing starts in a controlled state.
+- Team leader lock metadata is stored on contributeTeams using approvalLeaderIds, approvalLeadersLocked, approvalLeadersUpdatedAt, approvalLeadersUpdatedBy, and approvalLeadersUpdatedByName.
+
+V22 MAIN ADMIN GROUP MEMBER CONTROL
+- Added Main Admin-only Remove Member controls inside Messages > Group Chats > Members.
+- Removing a member immediately revokes their membership and group access while preserving their existing posts/messages for record continuity.
+- Removed members are added to a reversible Removed Members list visible to the Main Admin.
+- Removed members cannot rejoin with the existing group join code until the Main Admin restores them.
+- Added Restore Member so accidental removals can be reversed and group membership restored immediately.
+- Main Admin accounts cannot be removed through this control.
+- Removal/restoration uses Firestore transactions to avoid overwriting concurrent membership changes.
+- Existing Leave Group, Delete Group, group approvals, unread counts, group chat, feed, surveys, media, member profiles, and group ordering remain intact.
+
+V21 SETTINGS CONTROL
+- The top Settings control is now gear-icon only. The word Settings is removed from the header control while its tooltip and accessible label remain available.
+- Appearance and display preferences remain inside the Settings page.
+
+V21 CONNECT & CONTRIBUTE - APPROVAL LEADERS (HISTORICAL BASELINE, SUPERSEDED BY V23 TEAM LOCKING)
+- Added Approval Leader Directory inside Connect & Contribute > Teams.
+- Every active Approval Leader displays name, position, and a Message button that opens a private Direct Chat.
+- V21 originally allowed a preferred Approval Leader. V23 now limits choices to Leaders locked to the specific Team by the Main Admin.
+- Main Admin and Co-Admins can review all team applications. Under V23, appointed Approval Leaders can approve or decline only applications routed to them through Team-specific locked assignments.
+- Approval Leaders do not receive Co-Admin powers: they cannot create/edit/delete teams, remove memberships, edit contribution hours, void records, or use unrelated admin tools.
+- Only the Main Admin UI can appoint or remove Approval Leaders. Leader candidates are approved, unrestricted regular BAITIA users.
+- Under V23, when a leader is removed, Team locks are updated and pending applications are rerouted to another locked Team leader when available, otherwise to the admin approval queue.
+- Approval Leader records use the contributeLeaders collection with document id equal to the appointed user's id.
+
+V21 NOTIFICATION AUDIT / LEADER ROUTING
+- Connect & Contribute application alerts now recognize Main Admin, Co-Admins, and appointed Approval Leaders.
+- Under V23, Approval Leaders receive pending-application alerts only for applications routed directly to them.
+- Approval Leaders do not receive admin contribution-hour verification alerts unless they are also a Co-Admin/Main Admin.
+- Applicants continue to receive approval/decline/cancel/remove updates after a leader or admin action.
+- Existing notification sections remain wired for Community, Direct Chats, Group Chats, Announcements, Q&A, Events & Activities, Connect & Contribute, Bugs/Improvements, account/reaction activity, and connection requests.
+- Bell total continues to keep connection-request count separate from general activity count to avoid duplicate totals.
+- Browser notification permission/test controls and service-worker click routing remain in place.
+
+
+- Every published Links/Website section can now be collapsed or expanded independently.
+- Section headers provide Show Links / Hide Links controls with a smooth vertical collapse/expand transition.
+- Added Expand All and Collapse All controls for faster navigation.
+- Collapse preferences are stored locally per signed-in user on that browser/device and do not edit or delete published link data.
+- Main Admin section/link editing, deletion, drag ordering, and arrow ordering remain intact.
+
+V20 MEMBER RELATIONSHIP LABELS
+- Search Members and Community > Members now show live relationship-aware profile actions.
+- Accepted connections display View / Added, with Added highlighted in green.
+- Outgoing pending requests display View / Requested.
+- Incoming pending requests display View / Respond.
+- Users who are not yet connected display View / Add.
+- Main Admin relationships continue to be treated as already connected, consistent with the existing portal behavior.
+- Relationship status is loaded with a single connections query per active member-list screen rather than one new listener per card.
+
+V19 CONNECT & CONTRIBUTE ADMIN MANAGEMENT
+- Co-Admins and the Main Admin can edit a team name and description. Team-name changes are synchronized to existing membership/application records and contribution records without creating false unread contribution notifications.
+- Teams can be archived/reopened as the recommended reversible control.
+- Added permanent Delete Team with exact-name plus final confirmation. Permanent team deletion removes the team, its application/membership records, and all contribution records linked to that team, which can change historical leaderboard totals.
+- Team Applications & Memberships now displays all statuses, not only pending applications.
+- Admins can Approve, Decline, Cancel Application, Remove Member, Return to Pending, or permanently Delete Record.
+- Cancel Application and Remove Member preserve existing contribution history. Removed/cancelled users can apply again if the team is active.
+- Existing contribution controls remain: Verify, Decline, Return to Pending, Edit Entry, Adjust Hours, Void Entry, Restore to Pending, and Delete Entry.
+- Added user notification labels for cancelled applications and removed memberships.
+- Destructive operations are chunked below Firestore batch limits.
+
+V18 SETTINGS / APPEARANCE
+- Removed Appearance from the main navigation toggle list.
+- Added a dedicated Settings button in the top account controls, positioned between the Light/Dark theme button and Sign Out.
+- Appearance and display preferences are now opened through Settings.
+- Settings, Profile, and Search are included in session-tab restoration so refreshing those pages no longer falls back unexpectedly to Community.
+- Added narrow-screen header safeguards so the new Settings control does not cause horizontal overflow on small phones.
+
+V18 MAIN ADMIN DIRECT BROADCAST
+- Added Main Admin > Direct Broadcast.
+- The Main Admin writes one message and the portal delivers it as a separate private Direct Chat message to each approved BAITIA user and Co-Admin.
+- It is not a group chat. Recipients cannot see the other recipients and can reply privately to the Main Admin.
+- Broadcast delivery is chunked to stay safely below Firestore batch write limits.
+- Creator/maintenance account and the sending Main Admin account are excluded from recipients.
+- No new Firestore collection is used. Direct Broadcast writes to the existing chats/{chatId} and chats/{chatId}/messages collections.
+
+V18 NOTIFICATION AUDIT / FIXES
+- Fixed connection requests being represented twice in the bell total by separating pending-request count from general activity unread count.
+- The unified Messages shortcut now opens Direct Chats or Group Chats based on which area currently has more unread activity, instead of always defaulting to Direct Chats.
+- Added Connect & Contribute notification coverage for team applications, contribution submissions, approvals, rejections, hour adjustments, voids, restores, and admin edits.
+- Connect & Contribute now has its own unread badge in the main navigation and its own Notifications panel section.
+- Contribution action timestamps now use the latest relevant action time so a later adjustment/void is not hidden by an older approval timestamp.
+- Reduced unnecessary repeated Main Admin connection writes by skipping connections already accepted.
+- Background contribution notifications are treated as important browser notifications when browser permission is enabled.
+- Existing notification history, service-worker click routing, direct-message unread tracking, group notifications, announcement/Q&A/event/community alerts, and maintenance notices remain in place.
+
+PRIOR MAJOR FEATURES RETAINED
+- Repeatable Education and Professional Experience profile entries.
+- Announcement comments with user edit/delete and admin moderation.
+- Connect & Contribute teams, applications, monthly verified-hours leaderboard, 10-hour star, and admin correction workflow.
+- Unified Messages workspace with Direct Chats and Group Chats.
+- Responsive non-scrollable wrapping main navigation.
+
+DEPLOYMENT
+1. Upload BAITIA_V24_Netlify_Ready.zip directly to Netlify, or deploy the extracted folder with index.html at the site root.
+2. Keep service-worker.js and _headers at the same root level as index.html.
+3. If using a new Netlify domain, add that exact domain in Firebase Authentication > Settings > Authorized domains.
+4. After deployment, perform one hard refresh on test devices so the latest service worker takes control.
+
+FIREBASE / SECURITY RULES
+- Direct Broadcast requires the Main Admin to be allowed to create/update chat metadata and create messages in conversations where the Main Admin is a participant.
+- Connect & Contribute notification listeners read contributeApplications, contributeLogs, and the current user's contributeLeaders permission record. Production rules must permit intended users/reviewers to read the records required by their role.
+- The new contributeLeaders collection should be readable by approved portal users, writable only by the Main Admin, and should use the appointed user id as the document id. Firestore rules must enforce this because frontend UI checks alone are not a security boundary.
+- For V23 Team leader locks, Firestore rules should also prevent Co-Admins and regular users from changing approvalLeaderIds or approvalLeadersLocked on contributeTeams. The frontend hides these controls from Co-Admins, but server-side rules are required if this restriction must be tamper-resistant against direct Firestore/API writes.
+- Announcement comments continue to use announcements/{announcementId}/comments/{commentId}.
+- No Firestore rules file was supplied in the website package, so production rule changes cannot be bundled into this Netlify ZIP.
+
+NOTIFICATION LIMITATION
+- In-site alerts and background-tab browser notifications use the included frontend/service worker implementation.
+- True remote push when the browser is fully closed requires Firebase Cloud Messaging (or another push backend) and server-side push delivery. That infrastructure is not present in this frontend-only package.
+
+VALIDATION PERFORMED
+- JavaScript syntax validation of the main application script.
+- Firebase module syntax validation.
+- Service worker syntax validation.
+- Structural assertions for Settings placement, removal of Appearance from main navigation, Direct Broadcast, Connect & Contribute notification badge, Team-locked Approval Leader controls, Co-Admin read-only messaging, and Team-specific application routing.
+- Local HTTP serving check for index.html.
+- Final ZIP integrity verification.
+
+QUALITY NOTE
+No production web application can be truthfully guaranteed literally 100% bug-free across every browser, device, network condition, Firebase security-rule configuration, or future dependency update. This build implements the requested frontend changes and passes the available static, structural, serving, and packaging checks.
